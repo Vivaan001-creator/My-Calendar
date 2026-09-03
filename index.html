@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>पर्व कैलेंडर | हिंदू पंचांग 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Noto+Serif+Devanagari:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14142B; --surface:#1C1C3D; --surface-alt:#2A2A55;
+    --border:#33335C; --border-soft:#282850;
+    --text:#F5EFE0; --text-muted:#9E98BE; --text-faint:#716B95;
+    --gold:#E3A857; --gold-soft:#F3D9A8;
+    --sindoor:#C1443C; --sindoor-soft:#E0857D;
+    --jade:#5E9C8C;
+    --font-head:'Fraunces','Noto Serif Devanagari',serif;
+    --font-body:'Inter','Noto Sans Devanagari',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);}
+  .page{max-width:480px;margin:0 auto;padding:24px 16px 48px;}
+
+  .header{position:relative;overflow:hidden;border-radius:16px;padding:20px 18px;
+    background:linear-gradient(160deg, var(--surface), var(--bg));border:1px solid var(--border);}
+  .star{position:absolute;border-radius:50%;background:var(--gold-soft);}
+  .header-inner{position:relative;}
+  .kicker{font-family:var(--font-head);font-size:13px;color:var(--gold-soft);letter-spacing:.3px;margin:0 0 6px;}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;}
+  .nav-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:6px;border-radius:8px;display:flex;}
+  .nav-btn:hover{color:var(--text);}
+  .month-title{font-family:var(--font-head);font-size:26px;font-weight:600;margin:0;}
+  .sub-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+  .month-count{font-size:13px;color:var(--text-muted);margin:0;}
+  .today-btn{font-size:12.5px;color:var(--bg);background:var(--gold-soft);border:none;border-radius:999px;padding:5px 13px;font-weight:600;cursor:pointer;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+  .chip{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;
+    border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;}
+  .chip .dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .chip[data-key="festival"] .dot{background:var(--gold);}
+  .chip[data-key="national"] .dot{background:var(--sindoor);}
+  .chip[data-key="jayanti"] .dot{background:var(--jade);}
+  .chip.active{color:var(--bg);border-color:transparent;}
+  .chip.active .dot{background:var(--bg) !important;}
+  .chip[data-key="all"].active{background:var(--surface-alt);color:var(--text);}
+  .chip[data-key="festival"].active{background:var(--gold);}
+  .chip[data-key="national"].active{background:var(--sindoor);}
+  .chip[data-key="jayanti"].active{background:var(--jade);}
+
+  .cal-card{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;}
+  .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;}
+  .weekdays span{text-align:center;font-size:12px;font-weight:600;color:var(--text-faint);}
+  .weekdays span.sun{color:var(--sindoor-soft);}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-radius:10px;border:1.5px solid transparent;background:transparent;cursor:pointer;padding:0;}
+  .day:hover{background:var(--border-soft);}
+  .day.today{border-color:var(--gold);}
+  .day.selected{background:var(--surface-alt);}
+  .daynum{font-size:13px;color:var(--text);}
+  .daynum.sun{color:var(--sindoor-soft);}
+  .day.today .daynum{font-weight:700;}
+  .dots{display:flex;gap:2px;margin-top:4px;height:5px;}
+  .dot{width:4px;height:4px;border-radius:50%;display:inline-block;}
+  .dot-festival{background:var(--gold);}
+  .dot-national{background:var(--sindoor);}
+  .dot-jayanti{background:var(--jade);}
+
+  .moon{display:inline-block;flex-shrink:0;}
+  .moon-bright{width:10px;height:10px;border-radius:50%;background:var(--gold);}
+  .moon-dark{width:10px;height:10px;border-radius:50%;background:transparent;border:1.5px solid var(--gold);}
+  .moon-fixed{width:10px;height:10px;background:var(--text-faint);transform:rotate(45deg);}
+  .moon-sm.moon-bright,.moon-sm.moon-dark,.moon-sm.moon-fixed{width:7px;height:7px;}
+
+  .detail{margin-top:16px;}
+  .detail-date{font-size:14px;font-weight:600;color:var(--text);margin:0 0 8px;}
+  .detail-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:12px;padding:14px 16px;margin-bottom:8px;border-left:3px solid var(--border-soft);}
+  .detail-card.empty p{font-size:13px;color:var(--text-faint);margin:0;}
+  .detail-card.cat-festival{border-left-color:var(--gold);}
+  .detail-card.cat-national{border-left-color:var(--sindoor);}
+  .detail-card.cat-jayanti{border-left-color:var(--jade);}
+  .detail-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .detail-hi{font-family:var(--font-head);font-size:17px;font-weight:600;color:var(--text);margin:0;}
+  .tag{font-size:11px;border-radius:999px;padding:2px 8px;white-space:nowrap;}
+  .tag-festival{color:var(--gold);border:1px solid var(--gold);}
+  .tag-national{color:var(--sindoor-soft);border:1px solid var(--sindoor-soft);}
+  .tag-jayanti{color:var(--jade);border:1px solid var(--jade);}
+  .detail-en{font-size:12.5px;color:var(--text-muted);margin:2px 0 0;}
+  .detail-tithi{display:flex;align-items:center;gap:6px;margin-top:10px;}
+  .detail-tithi span{font-size:12.5px;color:var(--gold-soft);}
+  .detail-desc{font-size:13.5px;color:var(--text);margin-top:8px;line-height:1.5;}
+
+  .upcoming{margin-top:24px;}
+  .upcoming h2{font-family:var(--font-head);font-size:18px;font-weight:600;margin:0 0 10px;}
+  .upcoming .muted{font-size:13px;color:var(--text-faint);}
+  .upcoming-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+    background:var(--surface);border:1px solid var(--border-soft);border-radius:12px;padding:10px 12px;
+    margin-bottom:8px;cursor:pointer;color:inherit;font-family:inherit;}
+  .upcoming-item:hover{border-color:var(--border);}
+  .uc-date{width:42px;text-align:center;flex-shrink:0;}
+  .uc-day{font-size:17px;font-weight:700;color:var(--text);line-height:1.1;}
+  .uc-month{font-size:10.5px;color:var(--text-faint);}
+  .uc-sep{width:1px;align-self:stretch;background:var(--border-soft);}
+  .uc-mid{flex:1;min-width:0;}
+  .uc-hi{font-size:14px;font-weight:500;color:var(--text);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .uc-tithi{display:flex;align-items:center;gap:6px;margin-top:3px;}
+  .uc-tithi span{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .uc-badge{font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 9px;flex-shrink:0;}
+  .uc-badge.soon{background:var(--gold-soft);color:var(--bg);}
+  .uc-badge.cat-festival{color:var(--gold);border:1px solid var(--gold);}
+  .uc-badge.cat-national{color:var(--sindoor-soft);border:1px solid var(--sindoor-soft);}
+  .uc-badge.cat-jayanti{color:var(--jade);border:1px solid var(--jade);}
+
+  .footer-note{display:flex;gap:8px;margin-top:24px;padding:12px 14px;background:var(--surface);
+    border:1px solid var(--border-soft);border-radius:12px;}
+  .footer-note svg{flex-shrink:0;margin-top:2px;color:var(--text-faint);}
+  .footer-note p{font-size:12px;color:var(--text-faint);line-height:1.5;margin:0;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-inner">
+      <p class="kicker">पर्व कैलेंडर · हिंदू पंचांग</p>
+      <div class="nav-row">
+        <button class="nav-btn" id="prevMonth" aria-label="पिछला माह">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <h1 class="month-title" id="monthLabel"></h1>
+        <button class="nav-btn" id="nextMonth" aria-label="अगला माह">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="sub-row">
+        <p class="month-count" id="monthCount"></p>
+        <button class="today-btn" id="todayBtn">आज</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips" id="chips">
+    <button class="chip" data-key="all">सभी</button>
+    <button class="chip" data-key="festival"><span class="dot"></span>त्योहार</button>
+    <button class="chip" data-key="national"><span class="dot"></span>राष्ट्रीय पर्व</button>
+    <button class="chip" data-key="jayanti"><span class="dot"></span>जयंती</button>
+  </div>
+
+  <div class="cal-card">
+    <div class="weekdays">
+      <span class="sun">र</span><span>सो</span><span>मं</span><span>बु</span><span>गु</span><span>शु</span><span>श</span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="detail" id="detail"></div>
+
+  <div class="upcoming">
+    <h2>आने वाले पर्व</h2>
+    <div id="upcoming"></div>
+  </div>
+
+  <div class="footer-note">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <p>ये तिथियां वर्ष 2026 के पंचांग पर आधारित हैं। चंद्र-आधारित पर्व की तारीख शहर व पंचांग-परंपरा (अमांत/पूर्णिमांत) के अनुसार एक दिन आगे-पीछे हो सकती है, और हर वर्ष बदलती है — अगले वर्ष के लिए नया पंचांग ज़रूर देखें। जयंती सूची में फ़िलहाल कुछ प्रमुख महापुरुष शामिल हैं; कोई और नाम जोड़ना हो तो बता दें।</p>
+  </div>
+
+</div>
+
+<script>
+const EVENTS = [
+  { date:'2026-01-12', hi:'स्वामी विवेकानंद जयंती', en:'National Youth Day', cat:'jayanti', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'युवा दिवस, स्वामी विवेकानंद के विचारों को समर्पित।' },
+  { date:'2026-01-14', hi:'मकर संक्रांति', en:'Makar Sankranti / Pongal', cat:'festival', paksha:'solar', tithi:'सूर्य का मकर राशि में प्रवेश', desc:'सूर्य के उत्तरायण होने और फसल कटाई का पर्व।' },
+  { date:'2026-01-23', hi:'पराक्रम दिवस', en:'Netaji Subhas Chandra Bose Jayanti', cat:'jayanti', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'नेताजी सुभाष चंद्र बोस की जयंती।' },
+  { date:'2026-01-23', hi:'वसंत पंचमी', en:'Vasant Panchami', cat:'festival', paksha:'shukla', tithi:'माघ शुक्ल पंचमी', desc:'माँ सरस्वती की पूजा और वसंत ऋतु का स्वागत।' },
+  { date:'2026-01-26', hi:'गणतंत्र दिवस', en:'Republic Day', cat:'national', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'भारत का संविधान लागू होने की वर्षगांठ।' },
+  { date:'2026-02-15', hi:'महाशिवरात्रि', en:'Maha Shivratri', cat:'festival', paksha:'krishna', tithi:'फाल्गुन कृष्ण चतुर्दशी', desc:'भगवान शिव की आराधना की रात्रि, व्रत व जागरण।' },
+  { date:'2026-03-03', hi:'होलिका दहन', en:'Holika Dahan', cat:'festival', paksha:'purnima', tithi:'फाल्गुन पूर्णिमा', desc:'बुराई पर अच्छाई की जीत का प्रतीक अग्नि पूजन।' },
+  { date:'2026-03-04', hi:'होली', en:'Holi', cat:'festival', paksha:'krishna', tithi:'फाल्गुन कृष्ण प्रतिपदा', desc:'रंगों का त्योहार, प्रेम व उल्लास का पर्व।' },
+  { date:'2026-03-19', hi:'चैत्र नवरात्रि प्रारंभ', en:'Chaitra Navratri Begins', cat:'festival', paksha:'shukla', tithi:'चैत्र शुक्ल प्रतिपदा', desc:'नौ दिन माँ दुर्गा के नौ रूपों की आराधना।' },
+  { date:'2026-03-21', hi:'ईद-उल-फ़ित्र', en:'Id-ul-Fitr', cat:'national', paksha:'islamic', tithi:'इस्लामी कैलेंडर — चांद पर निर्भर', desc:'रमज़ान के रोज़ों की समाप्ति का पर्व।' },
+  { date:'2026-03-26', hi:'राम नवमी', en:'Ram Navami', cat:'festival', paksha:'shukla', tithi:'चैत्र शुक्ल नवमी', desc:'भगवान श्रीराम के जन्मोत्सव का पर्व।' },
+  { date:'2026-03-31', hi:'महावीर जयंती', en:'Mahavir Jayanti', cat:'festival', paksha:'shukla', tithi:'चैत्र शुक्ल त्रयोदशी', desc:'भगवान महावीर के जन्म कल्याणक का पर्व।' },
+  { date:'2026-04-02', hi:'हनुमान जयंती', en:'Hanuman Jayanti', cat:'festival', paksha:'purnima', tithi:'चैत्र पूर्णिमा', desc:'श्री हनुमान जी के जन्मोत्सव का पर्व।' },
+  { date:'2026-04-03', hi:'गुड फ्राइडे', en:'Good Friday', cat:'national', paksha:'christian', tithi:'निश्चित तिथि — ईसाई कैलेंडर', desc:'ईसा मसीह के बलिदान की स्मृति में।' },
+  { date:'2026-04-14', hi:'डॉ. भीमराव अंबेडकर जयंती', en:'Dr. B.R. Ambedkar Jayanti', cat:'jayanti', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'भारतीय संविधान के शिल्पी की जयंती।' },
+  { date:'2026-05-01', hi:'बुद्ध पूर्णिमा', en:'Buddha Purnima', cat:'festival', paksha:'purnima', tithi:'वैशाख पूर्णिमा', desc:'भगवान बुद्ध के जन्म, ज्ञान व निर्वाण की स्मृति।' },
+  { date:'2026-05-27', hi:'ईद-उल-अज़हा (बकरीद)', en:'Id-ul-Zuha / Bakrid', cat:'national', paksha:'islamic', tithi:'इस्लामी कैलेंडर — चांद पर निर्भर', desc:'त्याग व कुर्बानी का पर्व।' },
+  { date:'2026-06-26', hi:'मुहर्रम', en:'Muharram', cat:'national', paksha:'islamic', tithi:'इस्लामी कैलेंडर — चांद पर निर्भर', desc:'इस्लामी नववर्ष व इमाम हुसैन की स्मृति।' },
+  { date:'2026-07-16', hi:'जगन्नाथ रथ यात्रा', en:'Jagannath Rath Yatra', cat:'festival', paksha:'shukla', tithi:'आषाढ़ शुक्ल द्वितीया', desc:'भगवान जगन्नाथ की विश्व प्रसिद्ध रथ यात्रा, पुरी।' },
+  { date:'2026-07-29', hi:'गुरु पूर्णिमा', en:'Guru Purnima', cat:'festival', paksha:'purnima', tithi:'आषाढ़ पूर्णिमा', desc:'गुरुओं के प्रति कृतज्ञता व्यक्त करने का पर्व।' },
+  { date:'2026-08-15', hi:'स्वतंत्रता दिवस', en:'Independence Day', cat:'national', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'भारत की आज़ादी की वर्षगांठ।' },
+  { date:'2026-08-26', hi:'ईद मिलाद-उन-नबी', en:'Milad-un-Nabi', cat:'national', paksha:'islamic', tithi:'इस्लामी कैलेंडर — चांद पर निर्भर', desc:'पैगंबर मुहम्मद साहब के जन्मदिवस की स्मृति।' },
+  { date:'2026-08-26', hi:'ओणम', en:'Onam', cat:'festival', paksha:'solar', tithi:'मलयालम कैलेंडर — चिंगम मास', desc:'केरल का फसल उत्सव, राजा महाबली के स्वागत में।' },
+  { date:'2026-08-28', hi:'रक्षाबंधन', en:'Raksha Bandhan', cat:'festival', paksha:'purnima', tithi:'श्रावण शुक्ल पूर्णिमा', desc:'भाई-बहन के प्रेम व रक्षा-वचन का पर्व।' },
+  { date:'2026-09-04', hi:'कृष्ण जन्माष्टमी', en:'Krishna Janmashtami', cat:'festival', paksha:'krishna', tithi:'भाद्रपद कृष्ण अष्टमी', desc:'भगवान श्रीकृष्ण के जन्मोत्सव का पर्व।' },
+  { date:'2026-09-05', hi:'शिक्षक दिवस', en:"Teachers' Day (Dr. Radhakrishnan Jayanti)", cat:'jayanti', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'डॉ. सर्वपल्ली राधाकृष्णन की जयंती, शिक्षकों का सम्मान।' },
+  { date:'2026-09-14', hi:'गणेश चतुर्थी', en:'Ganesh Chaturthi', cat:'festival', paksha:'shukla', tithi:'भाद्रपद शुक्ल चतुर्थी', desc:'भगवान गणेश की स्थापना व आराधना का पर्व शुरू।' },
+  { date:'2026-09-17', hi:'विश्वकर्मा पूजा', en:'Vishwakarma Puja', cat:'festival', paksha:'solar', tithi:'कन्या संक्रांति', desc:'देवशिल्पी विश्वकर्मा की पूजा, औज़ार व मशीनों का पूजन।' },
+  { date:'2026-09-25', hi:'अनंत चतुर्दशी', en:'Anant Chaturdashi', cat:'festival', paksha:'shukla', tithi:'भाद्रपद शुक्ल चतुर्दशी', desc:'गणेश विसर्जन व भगवान विष्णु के अनंत रूप की पूजा।' },
+  { date:'2026-10-02', hi:'गांधी जयंती', en:'Mahatma Gandhi Jayanti', cat:'jayanti', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'राष्ट्रपिता महात्मा गांधी का जन्मदिवस, राष्ट्रीय अवकाश।' },
+  { date:'2026-10-11', hi:'शरद नवरात्रि प्रारंभ', en:'Sharad Navratri Begins', cat:'festival', paksha:'shukla', tithi:'आश्विन शुक्ल प्रतिपदा', desc:'साल की सबसे बड़ी नवरात्रि, नौ दिन माँ दुर्गा की आराधना।' },
+  { date:'2026-10-15', hi:'डॉ. ए.पी.जे. अब्दुल कलाम जयंती', en:'Dr. APJ Abdul Kalam Birth Anniversary', cat:'jayanti', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'मिसाइल मैन व पूर्व राष्ट्रपति की जयंती।' },
+  { date:'2026-10-20', hi:'दशहरा (विजयादशमी)', en:'Dussehra / Vijayadashami', cat:'festival', paksha:'shukla', tithi:'आश्विन शुक्ल दशमी', desc:'बुराई पर अच्छाई की जीत, रावण दहन का पर्व।' },
+  { date:'2026-10-29', hi:'करवा चौथ', en:'Karva Chauth', cat:'festival', paksha:'krishna', tithi:'कार्तिक कृष्ण चतुर्थी', desc:'सुहागिन स्त्रियों का पति की लंबी उम्र हेतु व्रत।' },
+  { date:'2026-11-06', hi:'धनतेरस', en:'Dhanteras', cat:'festival', paksha:'krishna', tithi:'कार्तिक कृष्ण त्रयोदशी', desc:'धन-समृद्धि की देवी की पूजा, दीपावली की शुरुआत।' },
+  { date:'2026-11-08', hi:'दीपावली (लक्ष्मी पूजा)', en:'Diwali / Lakshmi Puja', cat:'festival', paksha:'amavasya', tithi:'कार्तिक अमावस्या', desc:'रोशनी का पर्व, माँ लक्ष्मी व गणेश जी की पूजा।' },
+  { date:'2026-11-09', hi:'गोवर्धन पूजा', en:'Govardhan Puja', cat:'festival', paksha:'shukla', tithi:'कार्तिक शुक्ल प्रतिपदा', desc:'श्रीकृष्ण द्वारा गोवर्धन पर्वत उठाने की स्मृति में अन्नकूट।' },
+  { date:'2026-11-11', hi:'भाई दूज', en:'Bhai Dooj', cat:'festival', paksha:'shukla', tithi:'कार्तिक शुक्ल द्वितीया', desc:'भाई-बहन के स्नेह व दीर्घायु कामना का पर्व।' },
+  { date:'2026-11-14', hi:'बाल दिवस', en:"Children's Day (Nehru Jayanti)", cat:'jayanti', paksha:'gregorian', tithi:'निश्चित तिथि — ग्रेगोरियन', desc:'पंडित जवाहरलाल नेहरू की जयंती, बाल दिवस के रूप में।' },
+  { date:'2026-11-15', hi:'छठ पूजा', en:'Chhath Puja', cat:'festival', paksha:'shukla', tithi:'कार्तिक शुक्ल षष्ठी', desc:'सूर्य देव व छठी मैया की आराधना का महापर्व।' },
+  { date:'2026-11-24', hi:'गुरु नानक जयंती', en:'Guru Nanak Jayanti', cat:'festival', paksha:'purnima', tithi:'कार्तिक पूर्णिमा', desc:'सिख धर्म के प्रथम गुरु, गुरु नानक देव जी की जयंती।' },
+  { date:'2026-11-24', hi:'देव दीपावली', en:'Dev Deepavali', cat:'festival', paksha:'purnima', tithi:'कार्तिक पूर्णिमा', desc:'वाराणसी के घाटों पर देवताओं की दिवाली, दीपों की सजावट।' },
+  { date:'2026-12-20', hi:'गीता जयंती', en:'Gita Jayanti', cat:'festival', paksha:'shukla', tithi:'मार्गशीर्ष शुक्ल एकादशी', desc:'श्रीमद्भगवद्गीता के उपदेश की जयंती, कुरुक्षेत्र में विशेष आयोजन।' },
+  { date:'2026-12-25', hi:'क्रिसमस', en:'Christmas', cat:'national', paksha:'christian', tithi:'निश्चित तिथि — ईसाई कैलेंडर', desc:'ईसा मसीह के जन्मदिवस का पर्व।' }
+];
+
+const CAT = {
+  festival: { label:'त्योहार' },
+  national: { label:'राष्ट्रीय पर्व' },
+  jayanti: { label:'जयंती' }
+};
+
+const HINDI_MONTHS = ['जनवरी','फरवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
+const HINDI_WEEK_FULL = ['रविवार','सोमवार','मंगलवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
+
+const STARS = [
+  {top:'8%',left:'12%',size:3,o:.9},{top:'18%',left:'82%',size:2,o:.6},
+  {top:'30%',left:'25%',size:2,o:.5},{top:'12%',left:'55%',size:3,o:.7},
+  {top:'40%',left:'90%',size:2,o:.8},{top:'55%',left:'6%',size:2,o:.5},
+  {top:'65%',left:'45%',size:3,o:.6},{top:'20%',left:'38%',size:2,o:.4},
+  {top:'48%',left:'70%',size:2,o:.7},{top:'75%',left:'85%',size:2,o:.5},
+  {top:'5%',left:'70%',size:2,o:.5},{top:'60%',left:'20%',size:2,o:.6}
+];
+
+function pad(n){ return String(n).padStart(2,'0'); }
+
+const now = new Date();
+const todayStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+
+let state = { y: now.getFullYear(), m: now.getMonth(), selected: todayStr, filter: 'all' };
+
+const eventsByDate = {};
+EVENTS.forEach(e => { (eventsByDate[e.date] = eventsByDate[e.date] || []).push(e); });
+
+function passesFilter(e){ return state.filter === 'all' || e.cat === state.filter; }
+
+function moonHTML(paksha, sm){
+  const cls = sm ? ' moon-sm' : '';
+  if(paksha === 'shukla' || paksha === 'purnima') return `<span class="moon moon-bright${cls}"></span>`;
+  if(paksha === 'krishna' || paksha === 'amavasya') return `<span class="moon moon-dark${cls}"></span>`;
+  return `<span class="moon moon-fixed${cls}"></span>`;
+}
+
+function daysUntil(dateStr){
+  const d1 = new Date(todayStr+'T00:00:00');
+  const d2 = new Date(dateStr+'T00:00:00');
+  return Math.round((d2-d1)/86400000);
+}
+function untilLabel(n){
+  if(n===0) return 'आज';
+  if(n===1) return 'कल';
+  return `${n} दिन में`;
+}
+function formatLong(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dow = new Date(y,m-1,d).getDay();
+  return `${d} ${HINDI_MONTHS[m-1]} ${y}, ${HINDI_WEEK_FULL[dow]}`;
+}
+
+function renderStars(){
+  const header = document.querySelector('.header');
+  STARS.forEach(s => {
+    const el = document.createElement('span');
+    el.className = 'star';
+    el.style.top = s.top; el.style.left = s.left;
+    el.style.width = s.size+'px'; el.style.height = s.size+'px';
+    el.style.opacity = s.o;
+    header.appendChild(el);
+  });
+}
+
+function render(){
+  document.getElementById('monthLabel').textContent = `${HINDI_MONTHS[state.m]} ${state.y}`;
+  const prefix = `${state.y}-${pad(state.m+1)}-`;
+  const count = EVENTS.filter(e => e.date.startsWith(prefix) && passesFilter(e)).length;
+  document.getElementById('monthCount').textContent = count>0 ? `इस माह ${count} पर्व` : 'इस माह कोई पर्व दर्ज नहीं';
+
+  document.querySelectorAll('.chip').forEach(btn => btn.classList.toggle('active', state.filter === btn.dataset.key));
+
+  renderGrid();
+  renderDetail();
+  renderUpcoming();
+}
+
+function renderGrid(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  const firstDow = new Date(state.y, state.m, 1).getDay();
+  const daysInMonth = new Date(state.y, state.m+1, 0).getDate();
+  for(let i=0;i<firstDow;i++) grid.appendChild(document.createElement('div'));
+  for(let d=1; d<=daysInMonth; d++){
+    const dateStr = `${state.y}-${pad(state.m+1)}-${pad(d)}`;
+    const dayEvents = (eventsByDate[dateStr]||[]).filter(passesFilter);
+    const isToday = dateStr === todayStr;
+    const isSelected = dateStr === state.selected;
+    const dow = (firstDow + d - 1) % 7;
+    const cell = document.createElement('button');
+    cell.className = 'day' + (isToday ? ' today' : '') + (isSelected ? ' selected' : '');
+    cell.innerHTML = `<span class="daynum${dow===0?' sun':''}">${d}</span>
+      <span class="dots">${dayEvents.slice(0,3).map(e=>`<span class="dot dot-${e.cat}"></span>`).join('')}</span>`;
+    cell.addEventListener('click', () => { state.selected = dateStr; render(); });
+    grid.appendChild(cell);
+  }
+}
+
+function renderDetail(){
+  const wrap = document.getElementById('detail');
+  const events = (eventsByDate[state.selected]||[]).filter(passesFilter);
+  let html = `<p class="detail-date">${formatLong(state.selected)}</p>`;
+  if(events.length === 0){
+    html += `<div class="detail-card empty"><p>इस दिन पंचांग में कोई पर्व दर्ज नहीं है।</p></div>`;
+  } else {
+    html += events.map(e => `
+      <div class="detail-card cat-${e.cat}">
+        <div class="detail-top">
+          <p class="detail-hi">${e.hi}</p>
+          <span class="tag tag-${e.cat}">${CAT[e.cat].label}</span>
+        </div>
+        <p class="detail-en">${e.en}</p>
+        <div class="detail-tithi">${moonHTML(e.paksha)}<span>${e.tithi}</span></div>
+        <p class="detail-desc">${e.desc}</p>
+      </div>`).join('');
+  }
+  wrap.innerHTML = html;
+}
+
+function renderUpcoming(){
+  const wrap = document.getElementById('upcoming');
+  const list = EVENTS.filter(e => e.date >= todayStr && passesFilter(e)).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
+  if(list.length === 0){
+    wrap.innerHTML = `<p class="muted">चुने गए फ़िल्टर में इस वर्ष आगे कोई पर्व नहीं बचा।</p>`;
+    return;
+  }
+  wrap.innerHTML = list.map(e => {
+    const n = daysUntil(e.date);
+    const [,mm,dd] = e.date.split('-');
+    return `<button class="upcoming-item" data-date="${e.date}">
+      <div class="uc-date"><div class="uc-day">${dd}</div><div class="uc-month">${HINDI_MONTHS[Number(mm)-1].slice(0,3)}</div></div>
+      <div class="uc-sep"></div>
+      <div class="uc-mid">
+        <p class="uc-hi">${e.hi}</p>
+        <div class="uc-tithi">${moonHTML(e.paksha, true)}<span>${e.tithi}</span></div>
+      </div>
+      <span class="uc-badge ${n<=1?'soon':'cat-'+e.cat}">${untilLabel(n)}</span>
+    </button>`;
+  }).join('');
+  wrap.querySelectorAll('.upcoming-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dateStr = btn.dataset.date;
+      const [yy,mm] = dateStr.split('-').map(Number);
+      state.y = yy; state.m = mm-1; state.selected = dateStr;
+      render();
+      document.getElementById('detail').scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+}
+
+document.getElementById('prevMonth').addEventListener('click', () => {
+  state.m -= 1; if(state.m < 0){ state.m = 11; state.y -= 1; }
+  render();
+});
+document.getElementById('nextMonth').addEventListener('click', () => {
+  state.m += 1; if(state.m > 11){ state.m = 0; state.y += 1; }
+  render();
+});
+document.getElementById('todayBtn').addEventListener('click', () => {
+  state.y = now.getFullYear(); state.m = now.getMonth(); state.selected = todayStr;
+  render();
+});
+document.querySelectorAll('.chip').forEach(btn => {
+  btn.addEventListener('click', () => { state.filter = btn.dataset.key; render(); });
+});
+
+renderStars();
+render();
+</script>
+</body>
+</html>
